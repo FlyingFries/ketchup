@@ -1,0 +1,2 @@
+# ketchup
+random golang utilities
