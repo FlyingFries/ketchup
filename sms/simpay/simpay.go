@@ -9,8 +9,6 @@ import (
 	"strconv"
 )
 
-var InvalidNumerReturned = errors.New("Invalid number retured")
-var BadCode = errors.New("bad code")
 var InvalidNumber = errors.New("invalid number")
 
 type Auth struct {
@@ -26,6 +24,20 @@ type Error struct {
 
 func (err Error) Error() string {
 	return fmt.Sprintf("SimpayError %s %s %v", err.Code, err.Name, err.Value)
+}
+
+func IsCodeNotFoundErr(err error) bool {
+	if serr, ok := err.(Error); ok && serr.Code == "404" {
+		return true
+	}
+	return false
+}
+
+func IsCodeUsedErr(err error) bool {
+	if serr, ok := err.(Error); ok && serr.Code == "405" {
+		return true
+	}
+	return false
 }
 
 type checkParams struct {
@@ -76,7 +88,7 @@ func Check(auth Auth, service_id, number, code string) (price int, err error) {
 		return 0, json_data.Error[0]
 	}
 	if json_data.Respond.Status != "OK" {
-		return 0, BadCode
+		return 0, fmt.Errorf("Status not OK")
 	}
 
 	return
