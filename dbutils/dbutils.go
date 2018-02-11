@@ -18,7 +18,7 @@ func CheckAffected(result sql.Result, sqlError error, expected int64) error {
 		return err
 	}
 	if n != expected {
-		return fmt.Errorf("Bad affected count: %d != %d", n, expected)
+		return fmt.Errorf("bad affected count: %d != %d", n, expected)
 	}
 	return nil
 }

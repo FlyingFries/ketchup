@@ -1,6 +1,7 @@
 package jsonutils
 
 import (
+	"database/sql/driver"
 	"fmt"
 	"strconv"
 	"time"
@@ -17,7 +18,14 @@ func (ts Time) MarshalJSON() ([]byte, error) {
 func (ts Time) UnmarshalJSON(b []byte) error {
 	return fmt.Errorf("Time UnmarshalJSON not supported")
 }
+func (ts Time) Value() (driver.Value, error) {
+	return ts.Time, nil
+}
+func (ts *Time) Scan(src interface{}) error {
+	ts.Time = src.(time.Time)
+	return nil
+}
 
-func New(t time.Time) *Time {
+func NewTime(t time.Time) *Time {
 	return &Time{t}
 }
