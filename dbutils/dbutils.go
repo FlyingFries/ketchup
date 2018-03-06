@@ -8,8 +8,8 @@ import (
 	my_mysql "github.com/ziutek/mymysql/mysql"
 )
 
-//CheckAffected checks if result.RowsAffected() are equal to the expected numeber
-func CheckAffected(result sql.Result, sqlError error, expected int64) error {
+//CheckAffected checks if result.RowsAffected() are equal to the expected
+func CheckAffected(result sql.Result, sqlError error, expected ...int) error {
 	if sqlError != nil {
 		return sqlError
 	}
@@ -17,10 +17,13 @@ func CheckAffected(result sql.Result, sqlError error, expected int64) error {
 	if err != nil {
 		return err
 	}
-	if n != expected {
-		return fmt.Errorf("bad affected count: %d != %d", n, expected)
+	for _, i := range expected {
+		if n == int64(i) {
+			return nil
+		}
 	}
-	return nil
+
+	return fmt.Errorf("bad affected count: %d != %d", n, expected)
 }
 
 //IsMySQLDuplicate checks if mysql error is ER_DUP_ENTRY mysql error
